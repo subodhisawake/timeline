@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
-
+console.log("JWT_SECRET loaded:", process.env.JWT_SECRET ? "Yes" : "No");
 const app = express();
 const port = process.env.PORT || 5000;
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/userModel');
-const authMiddleware = require('../middleware/authMiddleware');
+const { protect } = require('../middleware/authMiddleware');
 
 // Find a user (public route)
 router.get('/:username', async (req, res) => {
@@ -15,9 +15,9 @@ router.get('/:username', async (req, res) => {
 });
 
 // Get current user profile (protected route)
-router.get('/profile/me', authMiddleware, async (req, res) => {
+router.get('/profile/me', protect, async (req, res) => {
   try {
-    const user = await User.findById(req.user).select('-password');
+    const user = await User.findById(req.user._id).select('-password');
     if (!user) return res.status(404).json({ message: 'User not found' });
     res.json(user);
   } catch (err) {
@@ -26,9 +26,9 @@ router.get('/profile/me', authMiddleware, async (req, res) => {
 });
 
 // Update user profile (protected route)
-router.put('/profile/update', authMiddleware, async (req, res) => {
+router.put('/profile/update', protect, async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.user, req.body, { new: true }).select('-password');
+    const user = await User.findByIdAndUpdate(req.user._id, req.body, { new: true }).select('-password');
     if (!user) return res.status(404).json({ message: 'User not found' });
     res.json(user);
   } catch (err) {

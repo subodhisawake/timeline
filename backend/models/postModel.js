@@ -7,8 +7,15 @@ const postSchema = new mongoose.Schema({
     required: true
   },
   location: {
-    lat: Number,
-    lng: Number,
+    type: {
+      type: String,
+      enum: ['Point'],
+      default: 'Point'
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      required: true
+    },
     name: String
   },
   year: {
@@ -24,6 +31,16 @@ const postSchema = new mongoose.Schema({
     up: { type: Number, default: 0 },
     down: { type: Number, default: 0 }
   },
+  userVotes: [{
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    voteType: {
+      type: String,
+      enum: ['up', 'down']
+    }
+  }],
   media: [{
     type: String,
     url: String
@@ -33,5 +50,8 @@ const postSchema = new mongoose.Schema({
     default: Date.now
   }
 });
+
+// Create a 2dsphere index on the location field
+postSchema.index({ 'location.coordinates': '2dsphere' });
 
 module.exports = mongoose.model('Post', postSchema);
