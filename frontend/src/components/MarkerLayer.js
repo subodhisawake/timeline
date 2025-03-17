@@ -2,11 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Marker, Popup, useMap } from 'react-map-gl/maplibre';
 import axios from 'axios';
 
+// Use environment variable or fallback to the deployed backend URL
+const PROD_API_URL = 'https://timeline-two-chi.vercel.app/api';
+const API_URL = process.env.NODE_ENV === 'production' ? PROD_API_URL : 'http://localhost:5000/api';
+
 const MarkerLayer = ({ year, minZoom = 3, refresh }) => {
   const [posts, setPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
   const { current: map } = useMap();
   const [currentZoom, setCurrentZoom] = useState(minZoom);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // Get current viewport from the map
   useEffect(() => {
@@ -31,8 +37,11 @@ const MarkerLayer = ({ year, minZoom = 3, refresh }) => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
+        setLoading(true);
+        setError(null);
         console.log('Fetching posts for year:', year);
-        const response = await axios.get('http://localhost:5000/api/posts', {
+        
+        const response = await axios.get(`${API_URL}/posts`, {
           params: { year }
         });
         
@@ -48,6 +57,9 @@ const MarkerLayer = ({ year, minZoom = 3, refresh }) => {
         setPosts(postsWithCoordinates);
       } catch (error) {
         console.error('Error fetching posts:', error);
+        setError('Failed to load historical markers');
+      } finally {
+        setLoading(false);
       }
     };
     
@@ -58,6 +70,14 @@ const MarkerLayer = ({ year, minZoom = 3, refresh }) => {
   console.log('Current zoom:', currentZoom, 'Min zoom:', minZoom);
   console.log('Should show markers:', currentZoom >= minZoom);
   console.log('Number of posts:', posts.length);
+
+  if (loading) {
+    return <div className="loading-indicator">Loading markers...</div>;
+  }
+
+  if (error) {
+    console.error('Error in MarkerLayer:', error);
+  }
 
   return (
     <>
