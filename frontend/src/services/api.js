@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-// Use your stable backend URL
-const PROD_API_URL = 'https://timelinebackend-avxeg9une-subodhisawakes-projects.vercel.app/api';
+const PROD_API_URL = 'https://timeline-two-chi.vercel.app/api';
 const API_URL = process.env.NODE_ENV === 'production' ? PROD_API_URL : 'http://localhost:5000/api';
 
 const api = axios.create({
@@ -10,6 +9,8 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+
 
 // Add interceptor to include auth token
 api.interceptors.request.use((config) => {

@@ -1,10 +1,12 @@
+// src/context/AuthContext.js
 import { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
 
-// Use your stable backend URL
-const API_URL = 'https://timelinebackend-avxeg9une-subodhisawakes-projects.vercel.app/api';
+// Use environment variable or fallback to the deployed backend URL
+const API_URL = process.env.REACT_APP_API_URL || 'https://timeline-two-chi.vercel.app/api';
+// Fallback to localhost for local development if needed
 const BASE_URL = process.env.NODE_ENV === 'production' ? API_URL : 'http://localhost:5000/api';
 
 export const AuthProvider = ({ children }) => {
