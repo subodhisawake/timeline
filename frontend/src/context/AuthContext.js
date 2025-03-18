@@ -4,10 +4,8 @@ import axios from 'axios';
 
 const AuthContext = createContext();
 
-// Use environment variable or fallback to the deployed backend URL
-const API_URL = process.env.REACT_APP_API_URL || 'https://timeline-two-chi.vercel.app/api';
-// Fallback to localhost for local development if needed
-const BASE_URL = process.env.NODE_ENV === 'production' ? API_URL : 'http://localhost:5000/api';
+// Use environment variable for API URL
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api'; // Fallback to localhost if in development
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -25,7 +23,7 @@ export const AuthProvider = ({ children }) => {
   // Register user
   const register = async (userData) => {
     try {
-      const response = await axios.post(`${BASE_URL}/auth/register`, userData);
+      const response = await axios.post(`${API_URL}/auth/register`, userData);
       if (response.data) {
         localStorage.setItem('user', JSON.stringify(response.data));
         setUser(response.data);
@@ -40,7 +38,7 @@ export const AuthProvider = ({ children }) => {
   // Login user
   const login = async (userData) => {
     try {
-      const response = await axios.post(`${BASE_URL}/auth/login`, userData);
+      const response = await axios.post(`${API_URL}/auth/login`, userData);
       if (response.data) {
         localStorage.setItem('user', JSON.stringify(response.data));
         setUser(response.data);
