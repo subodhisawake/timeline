@@ -21,20 +21,6 @@ connection.once('open', () => {
     console.log("MongoDB database connection established successfully");
 });
 
-// Test endpoint
-app.get('/api/test', (req, res) => {
-    res.json({ message: "Backend is connected!" });
-});
-
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-    res.status(200).json({ 
-        status: 'OK',
-        timestamp: new Date(),
-        mongodb: connection.readyState === 1 ? 'connected' : 'disconnected'
-    });
-});
-
 // Import and use routes
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -60,6 +46,4 @@ app.use((req, res) => {
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
-    console.log(`Test endpoint available at: http://localhost:${port}/api/test`);
-    console.log(`Health check available at: http://localhost:${port}/api/health`);
 });
