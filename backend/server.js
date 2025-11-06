@@ -12,7 +12,8 @@ app.use(cors({
   origin: [
     'http://localhost:3000',
     'https://timeline-nine-phi.vercel.app',
-    'https://timeline-api-7aj8.onrender.com'  // ✅ Add this line
+    'https://timeline-api-7aj8.onrender.com',
+    'https://timeline-e0lvpq8b7-subodhisawakes-projects.vercel.app',
   ],
   credentials: true
 }));
