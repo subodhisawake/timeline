@@ -12,7 +12,7 @@ app.use(cors({
   origin: [
     'http://localhost:3000',
     'https://timeline-nine-phi.vercel.app',
-    'https://timeline-two-chi.vercel.app'  // ✅ Add this line
+    'https://timeline-api-7aj8.onrender.com'  // ✅ Add this line
   ],
   credentials: true
 }));
