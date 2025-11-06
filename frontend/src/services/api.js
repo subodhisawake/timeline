@@ -1,8 +1,8 @@
 // src/services/api.js
 import axios from 'axios';
 
-// Use environment variable for API URL
-const PROD_API_URL = 'https://timeline-api-7aj8.onrender.com/api'; // Deployed backend URL
+// 💡 FIX: Include /api in the PROD_API_URL
+const PROD_API_URL = 'https://timeline-api-7aj8.onrender.com/api'; // Deployed backend URL MUST have /api
 const API_URL = process.env.NODE_ENV === 'production' ? PROD_API_URL : 'http://localhost:5000/api'; // Fallback to localhost if in development
 
 const api = axios.create({
