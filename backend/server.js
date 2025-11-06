@@ -1,16 +1,22 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-require('dotenv').config();
+
 console.log("JWT_SECRET loaded:", process.env.JWT_SECRET ? "Yes" : "No");
 const app = express();
 const port = process.env.PORT || 5000;
 
 // CORS configuration
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://timeline-nine-phi.vercel.app'], 
-    credentials: true
+  origin: [
+    'http://localhost:3000',
+    'https://timeline-nine-phi.vercel.app',
+    'https://timeline-two-chi.vercel.app'  // ✅ Add this line
+  ],
+  credentials: true
 }));
+
 app.use(express.json());
 
 // Connect to MongoDB

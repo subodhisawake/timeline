@@ -3,7 +3,9 @@ const router = require('express').Router();
 const Post = require('../models/postModel');
 const mongoose = require('mongoose');
 const { protect } = require('../middleware/authMiddleware');
-
+const { generateHistoricalContext } = require('../services/aiService');
+const { embedText, verifyClaim } = require('../services/aiService'); // Ensure these are imported
+const HistoricalFact = require('../models/historicalFactModel');
 // Get all posts with optional filtering
 router.get('/', async (req, res) => {
     try {
@@ -205,6 +207,109 @@ router.post('/:id/vote', protect, async (req, res) => {
     } catch (err) {
         console.error('Error voting on post:', err);
         res.status(400).json({ error: err.message });
+    }
+});
+
+// New route: POST /api/posts/:id/context
+router.post('/:id/context', async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+        if (!post) {
+            return res.status(404).json({ msg: 'Post not found' });
+        }
+
+        // **1. Check Cache (MongoDB)**
+        if (post.ai_context && post.ai_context.length > 0) {
+            return res.json({ context: post.ai_context, from_cache: true });
+        }
+
+        // **2. Generate Context (AI Call)**
+        const context = await generateHistoricalContext(post.text, post.year, post.location);
+
+        // **3. Cache Result (MongoDB Update)**
+        post.ai_context = context;
+        await post.save();
+
+        res.json({ context: context, from_cache: false });
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+// NEW ROUTE: POST /api/posts/:id/verify-claim (RAG Fact-Checking)
+router.post('/:id/verify-claim', async (req, res) => {
+    try {
+        const postId = req.params.id;
+        // Use .select() to also pull the cached RAG verification fields
+        const post = await Post.findById(postId).select('+aiVerificationResult').lean(); 
+        if (!post) {
+            return res.status(404).json({ msg: 'Post not found' });
+        }
+
+        // 1. Check Cache
+        if (post.verificationStatus !== 'Pending' && post.aiVerificationResult) {
+            return res.json({ verification: post.aiVerificationResult, from_cache: true });
+        }
+        
+        // --- RAG STEP 1: EMBED THE USER'S CLAIM ---
+        const queryText = `Context: ${post.location.name} in Year ${post.year}. Claim: ${post.content}`;
+        const queryVector = await embedText(queryText);
+        
+        // --- RAG STEP 2: RETRIEVE FACTS VIA VECTOR SEARCH WITH FILTERING ---
+        const retrievedFacts = await HistoricalFact.aggregate([
+            {
+                $vectorSearch: {
+                    index: 'historicalVectorIndex', 
+                    path: 'embedding',
+                    queryVector: queryVector,
+                    numCandidates: 100,
+                    limit: 3,
+                    
+                    // 💡 COMBINED TEMPORAL AND GEOGRAPHIC PRE-FILTER 💡
+                    filter: {
+                        $and: [
+                            // 1. Temporal Filter: Fact must cover the post's year
+                            { 'yearRange.start': { $lte: post.year } }, 
+                            { 'yearRange.end': { $gte: post.year } },
+                            
+                            // 2. Geographic Filter: Check if the post's location name is in the fact's keywords
+                            { 'locationKeywords': post.location.name } // Uses $in operator implicitly for the array
+                        ]
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    text: 1,
+                    yearRange: 1,
+                    source: 1,
+                    score: { $meta: 'vectorSearchScore' }
+                }
+            }
+        ]).exec();
+
+        // --- RAG STEP 3: LLM GENERATION ---
+        const verificationResult = await verifyClaim(post.content, post.year, post.location, retrievedFacts);
+        
+        // 4. Cache Result and Update Status
+        const verdict = verificationResult.startsWith('VERDICT: VERIFIED') ? 'Verified' : 
+                        verificationResult.startsWith('VERDICT: DISPUTED') ? 'Disputed' : 'Pending';
+
+        await Post.findByIdAndUpdate(postId, {
+            $set: {
+                verificationStatus: verdict,
+                aiVerificationResult: verificationResult,
+            }
+        });
+
+        res.json({ verification: verificationResult, from_cache: false });
+
+    } catch (err) {
+        console.error('RAG Fact-Checking Error:', err.message);
+        res.status(500).send('Server Error during RAG fact-check.');
     }
 });
 
