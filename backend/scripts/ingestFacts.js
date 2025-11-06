@@ -3,8 +3,6 @@ const HistoricalFact = require('../models/historicalFactModel');
 const { embedText } = require('../services/aiService');
 require('dotenv').config();
 
-// Connect to MongoDB (ensure your connection string is available)
-// ... (your existing MongoDB connection logic) ...
 
 // Example raw data (replace with reading a real file)
 const rawHistoricalData = [
@@ -42,5 +40,3 @@ async function ingestData() {
     console.log("Data ingestion complete.");
     mongoose.connection.close();
 }
-
-// ingestData(); // Run this script manually once you have your source data
