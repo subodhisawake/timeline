@@ -6,7 +6,7 @@ import axios from 'axios';
 import Post from './Post'; 
 
 // Use environment variable or fallback to the deployed backend URL
-const PROD_API_URL = 'https://timeline-two-chi.vercel.app/api';
+const PROD_API_URL = 'https://timeline-api-7aj8.onrender.com/api'; 
 const API_URL = process.env.NODE_ENV === 'production' ? PROD_API_URL : 'http://localhost:5000/api';
 
 // Helper function to determine marker color based on verification status
