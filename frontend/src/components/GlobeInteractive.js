@@ -1,4 +1,4 @@
-
+// frontend/src/components/GlobeInteractive.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 

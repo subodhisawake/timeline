@@ -1,3 +1,4 @@
+// frontend/src/components/Globe.js
 import React, { useState, useEffect, useRef } from 'react';
 import Globe from 'react-globe.gl';
 import { Slider, Typography, Button, CircularProgress } from '@mui/material';

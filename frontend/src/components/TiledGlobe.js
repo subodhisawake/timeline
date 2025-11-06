@@ -1,9 +1,11 @@
-import React, { useState, useRef } from 'react';
+// frontend/src/components/TiledGlobe.js
+import React, { useState, useRef, useContext } from 'react';
 import Map, { NavigationControl } from 'react-map-gl/maplibre';
 import { Typography, Button } from '@mui/material';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import MarkerLayer from './MarkerLayer';
 import MapPostForm from './MapPostForm';
+import AuthContext from '../context/AuthContext';
 import '../styles/Globe.css';
 
 const TiledGlobe = ({ initialYear, onBackToTimeline }) => {
@@ -18,6 +20,9 @@ const TiledGlobe = ({ initialYear, onBackToTimeline }) => {
   const [clickedLocation, setClickedLocation] = useState(null);
   const [refreshMarkers, setRefreshMarkers] = useState(false);
   const mapRef = useRef();
+
+  // Access logout and user from AuthContext
+  const { logout, user } = useContext(AuthContext);
 
   const handleMapClick = (event) => {
     if (viewState.zoom >= 3) { // Only allow posting when zoomed in
@@ -69,6 +74,7 @@ const TiledGlobe = ({ initialYear, onBackToTimeline }) => {
       )}
 
       <div className="controls-container">
+        {/* Pick another timeline button */}
         <Button
           className="timeline-select-button"
           onClick={onBackToTimeline}
@@ -76,6 +82,33 @@ const TiledGlobe = ({ initialYear, onBackToTimeline }) => {
         >
           Pick Another Timeline
         </Button>
+
+        {/* Logout button — only visible if logged in */}
+        {user && (
+          <Button
+            onClick={logout}
+            variant="outlined"
+            style={{
+              position: 'absolute',
+              top: '60px',
+              right: '10px',
+              color: 'white',
+              borderColor: 'white',
+              backgroundColor: 'rgba(0,0,0,0.4)',
+              transition: '0.2s',
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = 'rgba(255,255,255,0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'rgba(0,0,0,0.4)';
+            }}
+          >
+            Logout
+          </Button>
+        )}
+
+        {/* Year display */}
         <Typography
           variant="h6"
           style={{
@@ -90,7 +123,8 @@ const TiledGlobe = ({ initialYear, onBackToTimeline }) => {
         >
           Year: {year}
         </Typography>
-        
+
+        {/* Go to Rome button */}
         <Button
           onClick={goToRome}
           variant="contained"
@@ -98,7 +132,8 @@ const TiledGlobe = ({ initialYear, onBackToTimeline }) => {
         >
           Go to Rome
         </Button>
-        
+
+        {/* Zoom info */}
         <Typography
           variant="body2"
           style={{

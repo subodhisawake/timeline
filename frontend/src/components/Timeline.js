@@ -1,3 +1,4 @@
+// frontend/src/components/Timeline.js
 import React from 'react';
 import { Slider } from '@mui/material';
 import PropTypes from 'prop-types';
