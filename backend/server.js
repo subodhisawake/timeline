@@ -7,16 +7,39 @@ console.log("JWT_SECRET loaded:", process.env.JWT_SECRET ? "Yes" : "No");
 const app = express();
 const port = process.env.PORT || 5000;
 
-// CORS configuration
-app.use(cors({
-  origin: [
+// --- START: Permanent CORS Fix ---
+const allowedDomains = [
     'http://localhost:3000',
-    'https://timeline-nine-phi.vercel.app',
     'https://timeline-api-7aj8.onrender.com',
-    'https://timeline-e0lvpq8b7-subodhisawakes-projects.vercel.app',
-  ],
-  credentials: true
-}));
+    'https://timeline-nine-phi.vercel.app', 
+];
+
+const VERCEL_REGEX = /\.vercel\.app$/;
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps)
+        if (!origin) return callback(null, true);
+        
+        // 1. Check explicit list
+        if (allowedDomains.includes(origin)) {
+            return callback(null, true);
+        }
+        
+        // 2. Check Vercel dynamic domain pattern
+        if (VERCEL_REGEX.test(origin)) {
+            return callback(null, true);
+        }
+        
+        // Deny all others
+        callback(new Error(`CORS policy blocked access from: ${origin}`));
+    },
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
+// --- END: Permanent CORS Fix ---
 
 app.use(express.json());
 
