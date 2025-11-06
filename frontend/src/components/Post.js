@@ -33,9 +33,9 @@ const Post = ({ post, onVoteUpdate }) => {
     vote => vote.user === user?._id
   )?.voteType;
   
-  // Existing handleVote function (unchanged)
+  // HandleVote function 
   const handleVote = async (voteType) => {
-    // ... (unchanged logic) ...
+    
     if (!user) {
       alert('Please log in to vote');
       return;
@@ -66,7 +66,7 @@ const Post = ({ post, onVoteUpdate }) => {
     }
   };
 
-  // Existing handleGetContext function (unchanged)
+  // handleGetContext function
   const handleGetContext = async () => {
     if (aiContext) return; 
     
