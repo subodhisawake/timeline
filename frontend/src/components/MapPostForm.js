@@ -232,7 +232,7 @@ const MapPostForm = ({ location, year, onClose, onSubmit }) => {
       };
       
       const response = await axios.post(
-        'http://localhost:5000/api/posts', 
+        'https://timeline-api-7aj8.onrender.com/api/posts', 
         postData,
         {
           headers: {
