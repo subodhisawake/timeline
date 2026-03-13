@@ -3,7 +3,7 @@ import { useState, useContext } from 'react';
 import { CircularProgress } from '@mui/material';
 import axios from 'axios';
 import AuthContext from '../context/AuthContext';
-import '../styles/Post.css';
+import './Post.css';
 
 const PROD_API_URL = 'https://timeline-api-7aj8.onrender.com/api';
 const API_URL = process.env.NODE_ENV === 'production' ? PROD_API_URL : 'http://localhost:5000/api';
@@ -33,21 +33,22 @@ const Post = ({ post, onVoteUpdate }) => {
   const { user } = useContext(AuthContext);
 
   // vote state
-  const [loading, setLoading]   = useState(false);
+  const [loading, setLoading]     = useState(false);
   const [voteError, setVoteError] = useState(null);
+
+  // which AI panel is open: 'context' | 'verify' | null
+  const [activePanel, setActivePanel] = useState(null);
 
   // AI context panel
   const [aiContext, setAiContext]             = useState(post.aiContext || '');
   const [contextLoading, setContextLoading]  = useState(false);
   const [contextError, setContextError]      = useState(null);
-  const [contextOpen, setContextOpen]        = useState(false);
 
   // RAG verification panel
   const [verificationStatus, setVerificationStatus]   = useState(post.verificationStatus || 'Pending');
   const [verificationResult, setVerificationResult]   = useState(post.aiVerificationResult || '');
   const [verifyLoading, setVerifyLoading]             = useState(false);
   const [verifyError, setVerifyError]                 = useState(null);
-  const [verifyOpen, setVerifyOpen]                   = useState(false);
 
   const userVote = (user?._id && post.userVotes)
     ? post.userVotes.find(v => v.user === user._id)?.voteType
@@ -74,10 +75,10 @@ const Post = ({ post, onVoteUpdate }) => {
   };
 
   const handleToggleContext = async () => {
-    // If already loaded, just toggle visibility
-    if (aiContext) { setContextOpen(v => !v); return; }
+    // If already loaded, just toggle the panel via activePanel
+    if (aiContext) { setActivePanel(v => v === 'context' ? null : 'context'); return; }
 
-    setContextOpen(true);
+    setActivePanel('context');
     try {
       setContextLoading(true);
       setContextError(null);
@@ -89,8 +90,6 @@ const Post = ({ post, onVoteUpdate }) => {
       setContextLoading(false);
     }
   };
-
-  const handleToggleVerify = () => setVerifyOpen(v => !v);
 
   const handleRunVerify = async () => {
     if (verificationStatus !== 'Pending') return;
@@ -122,9 +121,6 @@ const Post = ({ post, onVoteUpdate }) => {
   const upCount    = post.votes?.up   ?? 0;
   const downCount  = post.votes?.down ?? 0;
 
-  // AI panel state: what to show in the expandable area
-  // 'context' | 'verify'
-  const [activePanel, setActivePanel] = useState(null);
 
   const togglePanel = (panel) => {
     if (activePanel === panel) { setActivePanel(null); return; }

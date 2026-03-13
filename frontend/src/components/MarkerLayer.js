@@ -33,7 +33,6 @@ const MarkerLayer = ({ year, minZoom = 3, refresh }) => {
   const { current: map } = useMap();
   const [currentZoom, setCurrentZoom] = useState(minZoom);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   // ... (Existing useEffect for zoom listener - unchanged) ...
   useEffect(() => {
@@ -56,7 +55,6 @@ const MarkerLayer = ({ year, minZoom = 3, refresh }) => {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        setError(null);
         
         const response = await axios.get(`${API_URL}/posts`, {
           params: { year }
@@ -71,7 +69,6 @@ const MarkerLayer = ({ year, minZoom = 3, refresh }) => {
         setPosts(postsWithCoordinates);
       } catch (error) {
         console.error('Error fetching posts:', error);
-        setError('Failed to load historical markers');
       } finally {
         setLoading(false);
       }
@@ -138,12 +135,11 @@ const MarkerLayer = ({ year, minZoom = 3, refresh }) => {
           onClose={() => setSelectedPost(null)}
           closeOnClick={false}
           closeButton={true}
-          maxWidth="320px"
         >
-          <div style={{ padding: 0, width: '300px' }}>
+          <div style={{ padding: '0px', maxWidth: '300px' }}>
             <Post 
               post={selectedPost} 
-              onVoteUpdate={handlePostUpdate}
+              onVoteUpdate={handlePostUpdate} // Pass the new universal handler
             />
           </div>
         </Popup>

@@ -9,7 +9,7 @@ import AuthContext from '../context/AuthContext';
 import '../styles/Globe.css';
 
 const TiledGlobe = ({ initialYear, onBackToTimeline }) => {
-  const [year, setYear] = useState(initialYear || 125);
+  const [year] = useState(initialYear || 125);
   const [viewState, setViewState] = useState({
     longitude: 0,
     latitude: 20,
