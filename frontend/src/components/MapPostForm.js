@@ -16,7 +16,8 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import AuthContext from '../context/AuthContext';
-
+// Add this near your imports
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 // Login Form Component
 const LoginForm = ({ onClose, onSuccess }) => {
   const { login } = useContext(AuthContext);
@@ -232,7 +233,7 @@ const MapPostForm = ({ location, year, onClose, onSubmit }) => {
       };
       
       const response = await axios.post(
-        'https://timeline-api-7aj8.onrender.com/api/posts', 
+        `${API_URL}/posts`,
         postData,
         {
           headers: {

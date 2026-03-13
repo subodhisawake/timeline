@@ -5,6 +5,7 @@ import { Slider, Typography, Button, CircularProgress } from '@mui/material';
 import * as THREE from 'three';
 import '../styles/Globe.css';
 import TiledGlobe from './TiledGlobe';
+import OnboardingGuide from './OnboardingGuide';
 
 const GlobeComponent = () => {
   const globeRef = useRef();
@@ -80,12 +81,18 @@ const GlobeComponent = () => {
 
   // If we're in Phase Two, render the TiledGlobe component instead
   if (!isTimelinePhase) {
-    return <TiledGlobe initialYear={year} onBackToTimeline={() => setIsTimelinePhase(true)} />;
+    return (
+      <>
+        <TiledGlobe initialYear={year} onBackToTimeline={() => setIsTimelinePhase(true)} />
+        <OnboardingGuide />
+      </>
+    );
   }
 
   // Otherwise, render the original timeline selection globe
   return (
     <div className="globe-container">
+      <OnboardingGuide />
       <Globe
         ref={globeRef}
         globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"

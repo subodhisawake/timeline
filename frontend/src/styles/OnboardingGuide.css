@@ -1,0 +1,396 @@
+/* frontend/src/components/OnboardingGuide.css
+   Dark cartographic theme — matches Post.css palette.
+   Fonts: Cormorant Garamond (display) + DM Sans (body)
+   Both loaded via the same Google Fonts link used by Post.css.
+*/
+
+/* ── FAB (persistent ? button) ──────────────────────────────────────────────── */
+
+.guide-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 2000;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(26, 31, 46, 0.92);
+  border: 1px solid rgba(232, 201, 126, 0.35);
+  color: #e8c97e;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+.guide-fab:hover {
+  background: rgba(232, 201, 126, 0.12);
+  border-color: rgba(232, 201, 126, 0.6);
+  transform: scale(1.06);
+}
+
+/* ── backdrop ───────────────────────────────────────────────────────────────── */
+
+.guide-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  background: rgba(8, 10, 18, 0.72);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: guide-fade-in 0.2s ease;
+}
+
+@keyframes guide-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── modal ──────────────────────────────────────────────────────────────────── */
+
+.guide-modal {
+  width: 100%;
+  max-width: 480px;
+  background: #1a1f2e;
+  border: 1px solid rgba(232, 201, 126, 0.18);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: guide-slide-up 0.25s ease;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+}
+
+@keyframes guide-slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── header ─────────────────────────────────────────────────────────────────── */
+
+.guide-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 0;
+}
+
+.guide-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.guide-phase-chip {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 20px;
+  /* default — overridden by variant classes below */
+  background: rgba(232, 201, 126, 0.12);
+  color: #e8c97e;
+  border: 1px solid rgba(232, 201, 126, 0.2);
+}
+
+/* Phase 1 — soft blue */
+.guide-phase-chip.chip-p1 {
+  background: rgba(100, 160, 220, 0.12);
+  color: #82b8e8;
+  border-color: rgba(100, 160, 220, 0.22);
+}
+
+/* Phase 2 — teal */
+.guide-phase-chip.chip-p2 {
+  background: rgba(80, 190, 160, 0.12);
+  color: #6ecfb8;
+  border-color: rgba(80, 190, 160, 0.22);
+}
+
+/* AI Features — gold (default palette) */
+.guide-phase-chip.chip-ai {
+  background: rgba(232, 201, 126, 0.12);
+  color: #e8c97e;
+  border-color: rgba(232, 201, 126, 0.22);
+}
+
+/* MCP — violet */
+.guide-phase-chip.chip-mcp {
+  background: rgba(170, 130, 220, 0.12);
+  color: #c4a0e8;
+  border-color: rgba(170, 130, 220, 0.22);
+}
+
+.guide-step-count {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  color: rgba(232, 228, 217, 0.35);
+  letter-spacing: 0.04em;
+}
+
+.guide-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(232, 228, 217, 0.35);
+  font-size: 14px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+  line-height: 1;
+}
+
+.guide-close-btn:hover {
+  color: rgba(232, 228, 217, 0.8);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ── step dots ──────────────────────────────────────────────────────────────── */
+
+.guide-dots {
+  display: flex;
+  gap: 6px;
+  padding: 14px 20px 0;
+}
+
+.guide-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 0;
+  transition: background 0.2s, transform 0.15s;
+  flex-shrink: 0;
+}
+
+.guide-dot:hover {
+  background: rgba(232, 201, 126, 0.4);
+  transform: scale(1.2);
+}
+
+.guide-dot.done {
+  background: rgba(232, 201, 126, 0.35);
+}
+
+.guide-dot.active {
+  background: #e8c97e;
+  width: 18px;
+  border-radius: 3px;
+}
+
+/* ── body ───────────────────────────────────────────────────────────────────── */
+
+.guide-body {
+  padding: 24px 24px 20px;
+  flex: 1;
+}
+
+.guide-icon {
+  font-size: 28px;
+  margin-bottom: 12px;
+  display: block;
+  line-height: 1;
+}
+
+.guide-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: #e8c97e;
+  margin: 0 0 12px;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+}
+
+.guide-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(232, 228, 217, 0.78);
+  margin: 0 0 16px;
+}
+
+/* ── action hint ────────────────────────────────────────────────────────────── */
+
+.guide-action-hint {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: rgba(232, 201, 126, 0.07);
+  border: 1px solid rgba(232, 201, 126, 0.15);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: rgba(232, 228, 217, 0.7);
+  line-height: 1.5;
+}
+
+.guide-action-arrow {
+  color: #e8c97e;
+  font-size: 14px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── tech block ─────────────────────────────────────────────────────────────── */
+
+.guide-tech-block {
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.guide-tech-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: none;
+  cursor: pointer;
+  padding: 10px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(232, 228, 217, 0.45);
+  letter-spacing: 0.04em;
+  transition: background 0.15s, color 0.15s;
+  text-align: left;
+}
+
+.guide-tech-toggle:hover,
+.guide-tech-toggle.open {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(232, 228, 217, 0.75);
+}
+
+.guide-tech-icon {
+  font-family: 'DM Mono', 'Fira Code', monospace;
+  font-size: 11px;
+  color: rgba(232, 201, 126, 0.5);
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
+.guide-tech-label {
+  font-size: 11px;
+  color: rgba(232, 228, 217, 0.55);
+  letter-spacing: 0.01em;
+}
+
+.guide-tech-chevron {
+  margin-left: auto;
+  font-size: 9px;
+  opacity: 0.5;
+}
+
+.guide-tech-detail {
+  margin: 0;
+  padding: 12px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: rgba(232, 228, 217, 0.6);
+  background: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ── footer ─────────────────────────────────────────────────────────────────── */
+
+.guide-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  gap: 8px;
+}
+
+.guide-nav-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, opacity 0.15s;
+  border: none;
+  white-space: nowrap;
+}
+
+.guide-prev {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(232, 228, 217, 0.6);
+}
+
+.guide-prev:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(232, 228, 217, 0.9);
+}
+
+.guide-prev:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.guide-next {
+  background: #e8c97e;
+  color: #1a1f2e;
+  font-weight: 600;
+}
+
+.guide-next:hover {
+  background: #f0d590;
+}
+
+.guide-skip-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: rgba(232, 228, 217, 0.28);
+  padding: 8px 4px;
+  transition: color 0.15s;
+}
+
+.guide-skip-btn:hover {
+  color: rgba(232, 228, 217, 0.55);
+}
+
+/* ── responsive ─────────────────────────────────────────────────────────────── */
+
+@media (max-width: 520px) {
+  .guide-modal {
+    border-radius: 12px 12px 0 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+  }
+
+  .guide-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .guide-title {
+    font-size: 22px;
+  }
+}

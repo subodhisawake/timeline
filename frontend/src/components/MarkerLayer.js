@@ -138,11 +138,12 @@ const MarkerLayer = ({ year, minZoom = 3, refresh }) => {
           onClose={() => setSelectedPost(null)}
           closeOnClick={false}
           closeButton={true}
+          maxWidth="320px"
         >
-          <div style={{ padding: '0px', maxWidth: '300px' }}>
+          <div style={{ padding: 0, width: '300px' }}>
             <Post 
               post={selectedPost} 
-              onVoteUpdate={handlePostUpdate} // Pass the new universal handler
+              onVoteUpdate={handlePostUpdate}
             />
           </div>
         </Popup>
